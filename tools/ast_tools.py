@@ -18,6 +18,7 @@ def classify_wav(audio_path, audio_model, label_csv):
         output = audio_model.forward(feats_data)
         output = torch.sigmoid(output)
     result_output = output.data.cpu().numpy()[0]
+    print(result_output.shape)
     # 4. map the post-prob to label
     labels = load_label(label_csv)
     sorted_indexes = np.argsort(result_output)[::-1]

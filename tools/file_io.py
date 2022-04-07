@@ -42,8 +42,8 @@ def write_pickle_file(obj, file_name):
         pickle.dump(obj, f)
     print(f'Write to {file_name} successfully.')
  
-def get_config():
-    with open('settings.yaml', 'r') as f:
+def get_config(path):
+    with open(path, 'r') as f:
 
         config = yaml.load(f, Loader=yaml.FullLoader)
         config = DotMap(config)

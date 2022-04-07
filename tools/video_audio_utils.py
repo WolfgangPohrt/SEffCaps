@@ -29,13 +29,13 @@ def extract_audio(video_path):
     os.system(command)
     return audio_path
 
-def segment_audio(audio_path):
+def segment_audio(audio_path, seg_dur):
     """
     Segment wav file to 10s segments
     and save them to the same folder.
     """
     base, ext = os.path.splitext(audio_path)
-    command = f"ffmpeg -y -i {audio_path} -f segment -segment_time 10 -c copy {base}%03d.wav"
+    command = f"ffmpeg -y -i {audio_path} -f segment -segment_time {seg_dur} -c copy {base}%03d.wav"
     os.system(command)
     audio_paths = glob(f'{base}0*.wav')
     return audio_paths

@@ -1,0 +1,47 @@
+mode: 'train'
+
+wav:
+  sr: 32000 
+  window_length: 1024
+  hop_length: 320
+  n_mels: 128
+
+encoder:
+  model: passt_s_swa_p16_128_ap476_w2v
+  fstride: 12
+  tstride: 12
+  u_patchout: 0
+  s_patchout_t: 40
+  s_patchout_f: 4
+  freeze: No
+  pretrained: No
+
+decoder:
+  nhead: 8
+  nhid: 512
+  nlayers: 6
+  dropout: 0.2
+  dim_feedforward: 2048
+  activation: 'gelu'
+
+word_embedding:
+  pretrained: Yes 
+  freeze: No 
+
+data:
+  batch_size: 10
+  num_workers: 8
+
+training:
+  label_smoothing: Yes
+  epochs: 30
+  lr: !!float 1e-4
+  clip_grad: 2
+  seed: 20
+
+path:
+  vocabulary: 'pickles/words_list.p'
+  encoder: 'pretrained_models/adudioset_deit.pth'  # 'pretrained_models/deit.pth'
+  word2vec: 'pretrained_models/word2vec/w2v_512.model'
+  # eval_model: 'pretrained_models/ACTm.pth'
+  eval_model: 'outputs/passt_s_swa_p16_128_ap476_w2v/model/best_model.pth'
