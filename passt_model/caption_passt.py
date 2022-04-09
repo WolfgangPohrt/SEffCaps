@@ -1,5 +1,5 @@
 import torch
-from passt import get_model
+from passt_model.passt import get_model
 import math
 import torch
 import torch.nn as nn

@@ -101,7 +101,7 @@ def create_batch(wav_paths):
     return torch.cat(batch_list, 0)
 
 def get_config():
-    with open('settings.yaml', 'r') as f:
+    with open('settings/settings.yaml', 'r') as f:
 
         config = yaml.load(f, Loader=yaml.FullLoader)
         config = DotMap(config)
@@ -110,7 +110,7 @@ def get_config():
 
 def get_act_model(device):
     config = get_config()
-    words_list = load_pickle_file('/home/theokouz/src/wavetransformer/audio_desc_pipeline/pickles/words_list.p')
+    words_list = load_pickle_file('pickles/words_list.p')
     ntokens = len(words_list)
     model = ACT(config, ntokens)
     model.load_state_dict(torch.load('/home/theokouz/src/ACT/pretrained_models/ACTm.pth')['model'])

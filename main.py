@@ -35,7 +35,7 @@ if __name__ == '__main__':
                         type=str, required=True) 
 
     config = get_config('settings/settings.yaml')
-    use_passt = False
+    use_passt = True
     segments_duration = 10
     # device = 'cpu'
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
