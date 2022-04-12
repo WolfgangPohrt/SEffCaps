@@ -119,13 +119,13 @@ def get_act_model(device):
     return model, words_list
 
 
-def forward_pass(batch, words_list, model, device):
+def forward_pass(batch, words_list, model, device, embeddings):
     batch = batch.to(device)
     sos_ind = words_list.index('<sos>')
     eos_ind = words_list.index('<eos>')
     with torch.no_grad():
         # output = beam_decode(batch, model, sos_ind, eos_ind, beam_width=2)
-        output = beam_decode_clustered(batch, model, sos_ind, eos_ind, beam_width=2)
+        output = beam_decode_clustered(batch, model, sos_ind, eos_ind, embeddings, words_list, beam_width=2)
         print('beam finished')
         output = output[:, 1:].int()
         y_hat_batch = torch.zeros(output.shape).fill_(eos_ind).to(device)

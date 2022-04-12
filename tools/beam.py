@@ -43,7 +43,7 @@ class BeamSearchNode(object):
         return self.logp / float((self.leng - 1)**T + 1e-6) + alpha * reward
 
 
-def beam_decode_clustered(x, model, sos_ind, eos_ind, beam_width=5, top_k=1):
+def beam_decode_clustered(x, model, sos_ind, eos_ind, w2v, words_list, beam_width=5, top_k=1):
     """
 
     Args:
@@ -59,19 +59,17 @@ def beam_decode_clustered(x, model, sos_ind, eos_ind, beam_width=5, top_k=1):
     """
 
 
-    with open('/home/theokouz/src/tmp/SEffCaps/pickles/words_list.p', 'rb') as f:
-        indices_list = pickle.load(f)
 
     
-    indices = [i for i in range(len(indices_list))]
-    ind_2_word = dict(zip(indices, indices_list))
+    indices = [i for i in range(len(words_list))]
+    idx2word = dict(zip(indices, words_list))
 
     decoded_batch = []
     n_clusters = 2
 
     device = x.device
     batch_size = x.shape[0]
-    w2v = Word2Vec.load('/home/theokouz/src/ACT/pretrained_models/word2vec/w2v_512.model')
+    # w2v = Word2Vec.load('/home/theokouz/src/ACT/pretrained_models/word2vec/w2v_512.model')
     encoded_features = model.encode(x)
     # audio features extracted by encoder, (time_frames, batch, nhid)
 
@@ -132,7 +130,7 @@ def beam_decode_clustered(x, model, sos_ind, eos_ind, beam_width=5, top_k=1):
 
 
             topk_hypothesis = [n.wordid for _,n in nextnodes]
-            topk_hypothesis_embedded = [avg_w2v_embedding(tokens, ind_2_word, w2v) for tokens in topk_hypothesis]
+            topk_hypothesis_embedded = [avg_w2v_embedding(tokens, idx2word, w2v) for tokens in topk_hypothesis]
             kmeans = KMeans(n_clusters=n_clusters)
             kmeans.fit(torch.stack(topk_hypothesis_embedded))
             y_kmeans = kmeans.predict(torch.stack(topk_hypothesis_embedded))
@@ -189,9 +187,9 @@ def beam_decode_clustered(x, model, sos_ind, eos_ind, beam_width=5, top_k=1):
     return pad_sequence(decoded_batch, batch_first=True, padding_value=eos_ind)
 
 
-def avg_w2v_embedding(tokens, ind_2_word, model):
+def avg_w2v_embedding(tokens, idx2word, model):
     tokens_list = [int(tokens[i][-1].item()) for i in range(tokens.shape[0])]
-    words_list = [ind_2_word[i] for i in tokens_list if i not in (0,9)]
+    words_list = [idx2word[i] for i in tokens_list if i not in (0,9)]
     vectors_list = []
     for word in words_list:
         if word == 'walkie-talkie':

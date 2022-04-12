@@ -18,6 +18,7 @@ from tools.video_audio_utils import download_video, extract_audio, segment_audio
 from tools.dataloader import get_data_loader, get_data_loader_passt
 from passt_model.caption_passt import captionPaSST
 from metrics.evaluate_metric import my_metric
+from gensim.models.word2vec import LineSentence, Word2Vec
 
 
 
@@ -36,6 +37,8 @@ if __name__ == '__main__':
                         type=str, required=True) 
 
     config = get_config('settings/settings.yaml')
+    w2v = Word2Vec.load('/home/theokouz/src/ACT/pretrained_models/word2vec/w2v_512.model')
+
     use_passt = False
     segments_duration = 10
     # device = 'cpu'
@@ -91,7 +94,7 @@ if __name__ == '__main__':
     total_captions = []
     for i, batch in enumerate(dataloader):
         print(i)
-        y_hat = forward_pass(batch=batch, words_list=words_list, model=model, device=device)
+        y_hat = forward_pass(batch=batch, words_list=words_list, model=model, device=device, embeddings=w2v)
         caption_pred = [[words_list[idx] for idx in pred if idx != eos_ind] for pred in y_hat]
         total_captions+=caption_pred
 
