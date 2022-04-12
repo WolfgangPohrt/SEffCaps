@@ -35,7 +35,7 @@ if __name__ == '__main__':
                         type=str, required=True) 
 
     config = get_config('settings/settings.yaml')
-    use_passt = True
+    use_passt = False
     segments_duration = 10
     # device = 'cpu'
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     label_csv = config.ast.audioset_labels
     basename = 'test'
     ignore_tags = ['Speech', 'Music']
-    video_path = download_video(url=args.url, workingdir=workingdir, basename=basename)
+    # video_path = download_video(url=args.url, workingdir=workingdir, basename=basename)
     video_path = 'downloaded_audio/test.mp4'
     audio_path = extract_audio(video_path=video_path)
     audio_paths = segment_audio(audio_path=audio_path, seg_dur=segments_duration)
@@ -53,23 +53,22 @@ if __name__ == '__main__':
     # Load preatrained AST for taging
     input_tdim = 1024
     audio_model = get_ast_model(input_tdim=input_tdim, device=device, config=config)
-    
+    print(len(audio_paths))
     for i, audio_path in enumerate(audio_paths):
         label = classify_wav(audio_path, audio_model, label_csv)
         labels_out.append(label)
-    print(labels_out)
+    print('Tagging {} segments'.format(len(labels_out)))
     
     # find video segments with tags not in the ignore list
     caption_segs = []
     for i, label in enumerate(labels_out):
         if label not in ignore_tags:
             caption_segs.append([str(i).zfill(3), label, i*segments_duration, segments_duration*(i+1)])
-    print(caption_segs)  
+    print('Segments to be captioned:', caption_segs)  
     # audio caption from the segments
     paths_to_caption = [f'{workingdir}/{basename}{i[0]}.wav' for i in caption_segs]
-    batch = create_batch(paths_to_caption)
+    # batch = create_batch(paths_to_caption)
     # print(batch.shape)  
-    print(paths_to_caption)
     
 
     if use_passt:
@@ -87,7 +86,8 @@ if __name__ == '__main__':
     # y_hat = forward_pass(batch=batch, words_list=words_list, model=model, device=device)
     # total_captions = [[words_list[idx] for idx in pred if idx != eos_ind] for pred in y_hat]
     total_captions = []
-    for batch in dataloader:
+    for i, batch in enumerate(dataloader):
+        print(i)
         y_hat = forward_pass(batch=batch, words_list=words_list, model=model, device=device)
         caption_pred = [[words_list[idx] for idx in pred if idx != eos_ind] for pred in y_hat]
         total_captions+=caption_pred
@@ -100,4 +100,4 @@ if __name__ == '__main__':
     input_path = video_path
     output_path = 'test_video_subs.mp4'
     create_subs_srt(subs_path, caps_timestamps_clean)
-    # add_subs(input_path, subs_path, output_path)
+    add_subs(input_path, subs_path, output_path)

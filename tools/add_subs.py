@@ -20,8 +20,8 @@ def add_subs(input_path, subs_path, output_path):
 
 if __name__ == '__main__':
     subs_path  = 'test_subs.srt'
-    input_path = 'test_video.mp4'
+    input_path = 'downloaded_audio/test.mp4'
     output_path = 'test_video_subs.mp4'
-    subs_list = [("These are some test subs", 1, 2), ('These are some test subs too!', 6, 10)]
-    create_subs_srt(subs_path, subs_list)
+    # subs_list = [("These are some test subs", 1, 2), ('These are some test subs too!', 6, 10)]
+    # create_subs_srt(subs_path, subs_list)
     add_subs(input_path, subs_path, output_path)

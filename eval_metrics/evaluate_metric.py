@@ -1,7 +1,6 @@
-
 from sqlite3 import Timestamp
 import pysrt 
-from tools.der import build_cost_matrix
+from der import build_cost_matrix
 from eval_metrics import evaluate_metrics_from_lists
 
 def to_seconds(timestamp):
@@ -67,8 +66,9 @@ def matched_captions(ref, hyp):
 def calculate_spider(matched_caps):
     hyp = [t[0] for t in matched_caps] 
     ref = [t[1] for t in matched_caps] 
-    ref = [[h]*5 for h in hyp]
+    ref = [[h] for h in hyp]
     ids = [i for i in range(1,len(matched_caps)-1)]
+    print(matched_caps)
     m, _ = evaluate_metrics_from_lists(hyp, ref, ids)
     return m['SPIDEr']
 
@@ -80,10 +80,10 @@ def my_metric(ref_srt, hyp_srt):
         elem (1,0) --> false alarm
         elem (1,1) --> correct sp
      """
-    ref = ref_srt_to_timestamps('/home/theokouz/src/audio_desc_pipeline/subs_scraping/srt_files/Blade.Runner.Black.Lotus.S01E07.WEBRip.x264-ION10.srt')
+    ref = ref_srt_to_timestamps(ref_srt)
     duration = (get_duration(ref))
     ref = prep_timestamps(ref, duration)
-    hyp = hyp_srt_to_timestamps('/home/theokouz/src/audio_desc_pipeline/test_subs.srt')
+    hyp = hyp_srt_to_timestamps(hyp_srt)
     hyp = prep_timestamps(hyp, duration)
     cost_matrix = build_cost_matrix(ref, hyp)
 
@@ -102,7 +102,7 @@ def my_metric(ref_srt, hyp_srt):
 if __name__ == '__main__':
 
 
-    ref_srt = '/home/theokouz/src/audio_desc_pipeline/subs_scraping/srt_files/Blade.Runner.Black.Lotus.S01E07.WEBRip.x264-ION10.srt'
+    ref_srt = '/home/theokouz/src/tmp/SEffCaps/Hostage.2021.720p.WEBRip.800MB.x264-GalaxyRG-HI.srt'
     hyp_srt = '/home/theokouz/src/audio_desc_pipeline/test_subs.srt'
 
 

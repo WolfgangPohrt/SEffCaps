@@ -134,7 +134,7 @@ def evaluate_metrics_from_lists(predictions: List[str],
     :rtype: tuple[dict[str, float], dict[int, dict[str, float]]]
     """
     assert(len(predictions) == len(ground_truths))
-    assert(all([len(i) == 5 for i in ground_truths]))
+    # assert(all([len(i) == 5 for i in ground_truths]))
 
     # Running int for id if not given
     if ids is None:
