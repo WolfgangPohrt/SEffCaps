@@ -6,6 +6,23 @@ import numpy as np
 from ast_model import ASTModel
 
 
+def find_segments_to_caption(labels, segments_duration, ignore_tags):
+    caption_segs = []
+    for i, labs in enumerate(labels):
+        if labs[0][0] not in ignore_tags:
+            label = labs[0][0]
+            caption_segs.append([str(i).zfill(3), label, i*segments_duration, segments_duration*(i+1)])
+        else:
+            if labs[0][1] < 0.2:
+                label = labs[1][0]
+                caption_segs.append([str(i).zfill(3), label, i*segments_duration, segments_duration*(i+1)])
+            
+        
+    return caption_segs
+        
+
+
+
 def classify_wav(audio_path, audio_model, label_csv):
     waveform, sr = torchaudio.load(audio_path)
     # 1. make feature for predict
@@ -22,7 +39,9 @@ def classify_wav(audio_path, audio_model, label_csv):
     labels = load_label(label_csv)
     sorted_indexes = np.argsort(result_output)[::-1]
     print(result_output[sorted_indexes[0]], np.array(labels)[sorted_indexes[0]], result_output[sorted_indexes[1]], np.array(labels)[sorted_indexes[1]])
-    return np.array(labels)[sorted_indexes[0]]
+
+    return [(np.array(labels)[sorted_indexes[i]], result_output[sorted_indexes[i]]) \
+                for i in range(3)]
 
 def get_ast_model(input_tdim, device, config):
     ast_mdl = ASTModel(label_dim=527, input_tdim=input_tdim, imagenet_pretrain=True, audioset_pretrain=True)

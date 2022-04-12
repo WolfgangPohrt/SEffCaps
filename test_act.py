@@ -9,7 +9,7 @@ import numpy as np
 import yaml
 from tqdm import tqdm
 from torch.nn.functional import pad
-from tools.beam import beam_decode
+from tools.beam import beam_decode, beam_decode_clustered
 from tools.file_io import load_pickle_file
 from models.TransModel import ACT
 from dotmap import DotMap
@@ -124,7 +124,8 @@ def forward_pass(batch, words_list, model, device):
     sos_ind = words_list.index('<sos>')
     eos_ind = words_list.index('<eos>')
     with torch.no_grad():
-        output = beam_decode(batch, model, sos_ind, eos_ind, beam_width=2)
+        # output = beam_decode(batch, model, sos_ind, eos_ind, beam_width=2)
+        output = beam_decode_clustered(batch, model, sos_ind, eos_ind, beam_width=2)
         print('beam finished')
         output = output[:, 1:].int()
         y_hat_batch = torch.zeros(output.shape).fill_(eos_ind).to(device)

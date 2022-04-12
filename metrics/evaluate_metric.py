@@ -1,7 +1,7 @@
 from sqlite3 import Timestamp
 import pysrt 
-from der import build_cost_matrix
-from eval_metrics import evaluate_metrics_from_lists
+from metrics.der import build_cost_matrix
+from metrics.eval_metrics import evaluate_metrics_from_lists
 
 def to_seconds(timestamp):
     return float(timestamp.minutes * 60 + timestamp.seconds)

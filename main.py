@@ -12,11 +12,12 @@ from glob import glob
 from test_act import create_batch, get_act_model, forward_pass
 from tools.add_subs import add_subs, create_subs_srt
 from ast_model import ASTModel
-from tools.ast_tools import load_label, make_features, get_ast_model, classify_wav
+from tools.ast_tools import load_label, make_features, get_ast_model, classify_wav, find_segments_to_caption
 from tools.file_io import get_config, load_pickle_file
 from tools.video_audio_utils import download_video, extract_audio, segment_audio
 from tools.dataloader import get_data_loader, get_data_loader_passt
 from passt_model.caption_passt import captionPaSST
+from metrics.evaluate_metric import my_metric
 
 
 
@@ -60,10 +61,12 @@ if __name__ == '__main__':
     print('Tagging {} segments'.format(len(labels_out)))
     
     # find video segments with tags not in the ignore list
-    caption_segs = []
-    for i, label in enumerate(labels_out):
-        if label not in ignore_tags:
-            caption_segs.append([str(i).zfill(3), label, i*segments_duration, segments_duration*(i+1)])
+    caption_segs = find_segments_to_caption(labels_out, segments_duration, ignore_tags)
+
+    # caption_segs = []
+    # for i, label in enumerate(labels_out):
+    #     if label not in ignore_tags:
+    #         caption_segs.append([str(i).zfill(3), label, i*segments_duration, segments_duration*(i+1)])
     print('Segments to be captioned:', caption_segs)  
     # audio caption from the segments
     paths_to_caption = [f'{workingdir}/{basename}{i[0]}.wav' for i in caption_segs]
@@ -100,4 +103,6 @@ if __name__ == '__main__':
     input_path = video_path
     output_path = 'test_video_subs.mp4'
     create_subs_srt(subs_path, caps_timestamps_clean)
-    add_subs(input_path, subs_path, output_path)
+    gt_subs = '/home/theokouz/src/tmp/SEffCaps/Hostage.2021.720p.WEBRip.800MB.x264-GalaxyRG-HI.srt'
+    print(my_metric(gt_subs, subs_path))
+    # add_subs(input_path, subs_path, output_path)

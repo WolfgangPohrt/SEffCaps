@@ -7,8 +7,8 @@ from typing import Dict, List, Union, Tuple, Any
 import random
 from datetime import datetime
 
-from coco_caption.pycocotools.coco import COCO
-from coco_caption.pycocoevalcap.eval import COCOEvalCap
+from metrics.coco_caption.pycocotools.coco import COCO
+from metrics.coco_caption.pycocoevalcap.eval import COCOEvalCap
 
 __author__ = 'Samuel Lipping -- Tampere University'
 __docformat__ = 'reStructuredText'
