@@ -12,6 +12,20 @@ import random
 from loguru import logger
 from gensim.models.word2vec import Word2Vec
 from tools.file_io import load_pickle_file
+import string
+
+
+
+def _sentence_process(sentence, add_specials=True):
+
+    # transform to lower case
+    sentence = sentence.lower()
+
+    # remove any punctuation and double space
+    sentence = sentence.translate(str.maketrans('', '', string.punctuation))
+    
+    sentence = sentence.replace('\n', ' ')
+    return sentence
 
 
 def setup_seed(seed):

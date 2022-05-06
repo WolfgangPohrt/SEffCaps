@@ -44,7 +44,7 @@ class PaSSTLoader(Dataset):
 
 def collate_fn_passt(batch):
     max_size = max([t.shape[3] for t in batch])
-    max_size = max_size if max_size == 250 else 250
+    max_size = max_size if max_size == 998 else 500
     batch_list =[pad(t, (0, max_size-t.shape[3]), 'constant', 0) for t in batch]
     return torch.cat(batch_list, 0)
 

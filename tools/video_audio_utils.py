@@ -35,6 +35,7 @@ def segment_audio(audio_path, seg_dur):
     and save them to the same folder.
     """
     base, ext = os.path.splitext(audio_path)
+    print(f"ffmpeg -y -i {audio_path} -f segment -segment_time {seg_dur} -c copy {base}%03d.wav")
     command = f"ffmpeg -y -i {audio_path} -f segment -segment_time {seg_dur} -c copy {base}%03d.wav"
     os.system(command)
     os.remove(audio_path)

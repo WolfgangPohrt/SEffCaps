@@ -142,9 +142,12 @@ def DER(ref, hyp):
     check_input(hyp)
     ref_total_length = compute_total_length(ref)
     cost_matrix = build_cost_matrix(ref, hyp)
+    print(cost_matrix)
     row_index, col_index = optimize.linear_sum_assignment(-cost_matrix)
+    print(row_index, col_index, cost_matrix[row_index, col_index])
     optimal_match_overlap = cost_matrix[row_index, col_index].sum()
     union_total_length = compute_merged_total_length(ref, hyp)
+    print(union_total_length)
     der = (union_total_length - optimal_match_overlap) / ref_total_length
     return der
 

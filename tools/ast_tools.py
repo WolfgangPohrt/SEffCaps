@@ -13,7 +13,7 @@ def find_segments_to_caption(labels, segments_duration, ignore_tags):
             label = labs[0][0]
             caption_segs.append([str(i).zfill(3), label, i*segments_duration, segments_duration*(i+1)])
         else:
-            if labs[0][1] < 0.2:
+            if labs[0][1] < 0.1:
                 label = labs[1][0]
                 caption_segs.append([str(i).zfill(3), label, i*segments_duration, segments_duration*(i+1)])
             
